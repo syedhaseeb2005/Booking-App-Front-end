@@ -1,49 +1,28 @@
 import React from 'react'
 import './FeaturedProperties.css'
+import useFetch from '../../Hooks/useFetch'
 
 function FeaturedProperties() {
+    const {data , loading } = useFetch('http://localhost:8000/api/hotels?featured=true')
+    // console.log(data);
+
   return (
     <div  className='fp'>
-        <div className="fpItem">
-            <img src="https://img.freepik.com/premium-photo/norwegian-cottages_1011485-142.jpg?size=626&ext=jpg&uid=R119851894&ga=GA1.1.1922389197.1677510164&semt=ais" alt="img" className='fpImg' />
-            <span className="fpName">Apart Hotel Stare Miasto</span>
-            <span className="fpCity">Madrid</span>
-            <span className="fpPrice">Starting from $120</span>
-            <div className="fpRating">
-                <button>8.9</button>
-                <span>Excellent</span>
+       {loading ? 'Loading...'
+        : <> 
+        {data.map((item) =>(
+            <div className="fpItem" key={item?._id}>
+                <img src={item.photos[0]} alt='img' className='fpImg' />
+                <span className="fpName">{item.name}</span>
+                <span className="fpCity">{item.city}</span>
+                <span className="fpPrice">Starting from ${item.cheapestPrice}</span>
+                <div className="fpRating">
+                    <button>8.9</button>
+                    <span>Excellent</span>
+                </div>
             </div>
-        </div>
-        <div className="fpItem">
-            <img src="https://img.freepik.com/premium-photo/norwegian-cottages_1011485-142.jpg?size=626&ext=jpg&uid=R119851894&ga=GA1.1.1922389197.1677510164&semt=ais" alt="img" className='fpImg' />
-            <span className="fpName">Apart Hotel Stare Miasto</span>
-            <span className="fpCity">Madrid</span>
-            <span className="fpPrice">Starting from $120</span>
-            <div className="fpRating">
-                <button>8.9</button>
-                <span>Excellent</span>
-            </div>
-        </div>
-        <div className="fpItem">
-            <img src="https://img.freepik.com/premium-photo/norwegian-cottages_1011485-142.jpg?size=626&ext=jpg&uid=R119851894&ga=GA1.1.1922389197.1677510164&semt=ais" alt="img" className='fpImg' />
-            <span className="fpName">Apart Hotel Stare Miasto</span>
-            <span className="fpCity">Madrid</span>
-            <span className="fpPrice">Starting from $120</span>
-            <div className="fpRating">
-                <button>8.9</button>
-                <span>Excellent</span>
-            </div>
-        </div>
-        <div className="fpItem">
-            <img src="https://img.freepik.com/premium-photo/norwegian-cottages_1011485-142.jpg?size=626&ext=jpg&uid=R119851894&ga=GA1.1.1922389197.1677510164&semt=ais" alt="img" className='fpImg'/>
-            <span className="fpName">Apart Hotel Stare Miasto</span>
-            <span className="fpCity">Madrid</span>
-            <span className="fpPrice">Starting from $120</span>
-            <div className="fpRating">
-                <button>8.9</button>    
-                <span>Excellent</span>
-            </div>
-        </div>
+        ))}
+        </>}
     </div>
   )
 }

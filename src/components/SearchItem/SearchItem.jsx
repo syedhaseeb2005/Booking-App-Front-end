@@ -1,19 +1,20 @@
 import React from 'react'
 import './SearchItem.css'
+import { Link } from 'react-router-dom'
 
-function SearchItem() {
+function SearchItem({item}) {
   return (
     <div className='searchItem'>
-        <img src="https://img.freepik.com/free-photo/coconut-landscape-green-tropical-swimming_1253-651.jpg?size=626&ext=jpg&uid=R119851894&ga=GA1.1.1922389197.1677510164&semt=ais" className='searchItemImg' alt="img" />
+        <img src={item.photos[0]} className='searchItemImg' alt="img" />
         <div className="searchItemDesc">
-            <h1 className="searchItemTitle">Tower Street Apartment</h1>
-            <span className="searchItemDistance">500m from center</span>
+            <h1 className="searchItemTitle">{item.name}</h1>
+            <span className="searchItemDistance">{item.distance}m from center</span>
             <span className="searchItemTaxiOp">Free Airport Taxi</span>
             <span className='searchItemSubtitle'>
                 Studio Apartment with Air conditioning
             </span>
             <span className="searchItemFeatured">
-                Entire Studio . 1 Bathroom . 21m<sup>2</sup> 1 full bed
+                {item.desc}
             </span>
             <span className="searchItemCancel">Free Cancellation</span>
             <span className="searchItemCancelOpSubtitle">
@@ -26,9 +27,11 @@ function SearchItem() {
                 <button>8.9</button>
             </div>
             <div className="searchItemDetailText">
-                <span className="searchItemPrice">$123</span>
+                <span className="searchItemPrice">${item.cheapestPrice}</span>
                 <span className="searchItemTaxOp">Includes Taxes and fees</span>
+                <Link to={`/hotel/${item._id}`}>
                 <button className='searchItemCheckBtn'>See Availability</button>
+                </Link>
             </div>
         </div>
     </div>

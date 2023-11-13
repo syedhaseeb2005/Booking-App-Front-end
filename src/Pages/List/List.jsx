@@ -6,15 +6,26 @@ import { useLocation } from 'react-router-dom'
 import { format } from 'date-fns'
 import { DateRange } from 'react-date-range'
 import SearchItem from '../../components/SearchItem/SearchItem'
+import useFetch from '../../Hooks/useFetch.js'
 
 function List() {
 
   const location = useLocation()
   // console.log(location);
   const [destination , setdestination] = useState(location.state.destination)
-  const [date , setdate] = useState(location.state.date)
-  const [option , setoption] = useState(location.state.option)
+  const [dates , setdates] = useState(location.state.date)
   const [opendate , setdateopen] = useState(false)
+  const [option , setoption] = useState(location.state.option)
+  const [min , setmin] = useState(undefined)
+  const [max , setmax] = useState(undefined)
+
+  const {data , loading ,  refetch} = useFetch(`http://localhost:8000/api/hotels?city=${destination}&min=${min || 0}&max=${max || 999}`)
+  // console.log(data);
+
+  const hanldeClick = () =>{
+    refetch()
+  }
+
   return (
     <>
     <div>
@@ -30,20 +41,22 @@ function List() {
             </div>
             <div className="ListSearchItem">
               <label>Check-in Date</label>
-              <span className='dates' onClick={()=> setdateopen(!opendate)}>
-                {`${format(date[0].startDate, "MM/dd/yyyy")} 
+              <span className='dates' onClick={() => setdateopen(!opendate)}>
+                {dates && dates.length > 0 &&
+                  `${format(dates[0].startDate, "MM/dd/yyyy")} 
                     to 
-                    ${format(date[0].endDate, "MM/dd/yyyy")}` }
-              {opendate &&
-                <DateRange
-                editableDateInputs={true}
-                onChange={(item)=> setdate([item.selection])}
-                moveRangeOnFirstSelection={false}
-                ranges={date}
-                minDate={new Date()}
-                className='date'
-                />}
-                </span>
+                  ${format(dates[0].endDate, "MM/dd/yyyy")}`
+                }
+                 {opendate &&
+                  <DateRange
+                    editableDateInputs={true}
+                    onChange={(item) => setdates([item.selection])}
+                    moveRangeOnFirstSelection={false}
+                    ranges={dates}
+                    mindates={new Date()}
+                    className='date'
+                  />}
+              </span>
             </div>
 
             <div className="ListSearchItem">
@@ -52,13 +65,13 @@ function List() {
                 <span className="listSearchOptionText">
                   Min Price <small>Per night</small>
                 </span>
-                <input type="number"  className="listsearchOptionInput"/>
+                <input type="number" onChange={e=>setmin(e.target.value)}  className="listsearchOptionInput"/>
               </div>
               <div className="listSearchOptionItem">
                 <span className="listSearchOptionText">
                   Max Price <small>Per night</small>
                 </span>
-                <input type="number" className="listsearchOptionInput"/>
+                <input type="number" onChange={e=>setmax(e.target.value)} className="listsearchOptionInput"/>
               </div>
               <div className="listSearchOptionItem">
                 <span className="listSearchOptionText">
@@ -79,13 +92,17 @@ function List() {
                 <input type="number" min={1} placeholder={option.room} className="listsearchOptionInput"/>
               </div>
             </div>
-            <button>Search</button>
+            <button onClick={hanldeClick}>Search</button>
           </div>
           <div className="ListResult">
-            <SearchItem/>
-            <SearchItem/>
-            <SearchItem/>
-            <SearchItem/>
+            {loading ? "Loading" : 
+              <>
+              {data.map((item)=>(
+                <SearchItem item={item} key={item?._id}/>
+              ))}
+            </>
+            }
+         
           </div>
         </div>
       </div>
