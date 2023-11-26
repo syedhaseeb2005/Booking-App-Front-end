@@ -1,0 +1,25 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.loginContainer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin: 180px auto;    
+    gap: 10px;
+}
+.loginContainer input {
+    padding: 12px 15px;
+    outline: none;
+}
+
+.loginContainer button {
+    cursor: pointer;
+    background-color: transparent;
+    border: 3px solid gold;
+    padding: 7px 20px;
+}

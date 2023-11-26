@@ -7,8 +7,10 @@ import { faCircleArrowLeft, faCircleArrowRight, faCircleXmark, faLocationDot } f
 import MailList from '../../components/mailList/MailList'
 import Footer from '../../components/footer/Footer'
 import useFetch from '../../Hooks/useFetch.js'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { SearchContext } from '../../context/SearchContext.js'
+import { AuthContext } from '../../context/AuthContext.js'
+import Reserve from '../../components/Reserve/Reserve.jsx'
 
 
 function Hotels() {
@@ -17,18 +19,25 @@ function Hotels() {
   const id = location.pathname.split('/')[2]
   const [slideNumber , setSlideNumber] = useState(0);
   const [open , setOpen] = useState(false);
+  const [openModal , setOpenModal] = useState(false);
 
   const {data , loading} = useFetch(`http://localhost:8000/api/hotels/find/${id}`)
   // console.log(data);
   // console.log(id);
+  const {user} = useContext(AuthContext)
+  const navigate = useNavigate()
   const {dates , option} = useContext(SearchContext)
+  
   // console.log(dates);
+  
   const MILLISECONDS_PER_DAY = 1000 * 60 * 60 * 24;
   function dayDifference(date1, date2) {
     const timeDiff = Math.abs(date2?.getTime() - date1?.getTime());
     const diffDays = Math.ceil(timeDiff / MILLISECONDS_PER_DAY);
     return diffDays;
+  
   }
+  
   const days = dayDifference(dates[0]?.endDate , dates[0]?.startDate);
 
   const photos = [
@@ -66,6 +75,15 @@ function Hotels() {
     setSlideNumber(newSlideNumber)
   }
 
+  const handleClick = () =>{
+    if(user){
+      setOpenModal(true)
+    }else{
+      navigate('/login')
+    }
+  }
+
+
   return (
     <>
     <div>
@@ -78,7 +96,7 @@ function Hotels() {
           <FontAwesomeIcon icon={faCircleXmark} className='close' onClick={()=>setOpen(false)}/>
           <FontAwesomeIcon icon={faCircleArrowLeft} className='arrow' onClick={()=>handleMove("l")}/>
           <div className="sliderWrapper">
-            <img src={data.photos[slideNumber]} alt="" className="sliderImg" />
+            <img src={data?.photos[slideNumber]} alt="" className="sliderImg" />
           </div>
           <FontAwesomeIcon icon={faCircleArrowRight} className='arrow' onClick={()=>handleMove("r")}/>
         </div>}
@@ -118,13 +136,17 @@ function Hotels() {
                   <h2>
                     <b>${days * data.hotelDB?.cheapestPrice * option.room}</b> ({days} nights)
                   </h2>
-                  <button>Reserve or Book Now!</button>
+                  <button onClick={handleClick}>Reserve or Book Now!</button>
                 </div>
           </div>
         </div>
         <MailList/>
         <Footer/>
       </div></>}
+
+      {
+        openModal && <Reserve  hotelId={id}/>
+      }
     </div>
     </>
   )

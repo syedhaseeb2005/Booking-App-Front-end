@@ -1,5 +1,7 @@
 import {createContext, useEffect, useReducer} from 'react'
+// import {useDispatch} from 'react-redux'
 
+// const dispatch = useDispatch()
 const Initial_State = {
     user : JSON.parse(localStorage.getItem('user')) || null,
     loading : false,
@@ -39,8 +41,8 @@ const AuthReducer = (state , action) =>{
     }
 }
 
-export const AuthContextProvider = ({children}) =>{
-    const [state , disptach] = useReducer(AuthReducer , Initial_State)
+export const AuthContextProvider = ({ children }) =>{
+    const [state , dispatch] = useReducer(AuthReducer , Initial_State)
     
     useEffect(()=>{
         localStorage.setItem('user', JSON.stringify(state.user))
@@ -52,7 +54,7 @@ export const AuthContextProvider = ({children}) =>{
             user : state.user,
             loading  : state.loading,
             error : state.error,
-            disptach
+            dispatch
         }}>
             {children}
         </AuthContext.Provider>

@@ -8,6 +8,7 @@ import {DateRange} from 'react-date-range'
 import format from 'date-fns/format';
 import { useNavigate } from 'react-router-dom';
 import { SearchContext } from '../../context/SearchContext';
+import { AuthContext } from '../../context/AuthContext';
 
 
 function Header({type}) {
@@ -41,7 +42,7 @@ function Header({type}) {
         disptach({type : "NEW_SEARCH",payload:{destination ,dates ,option}})
         navigate('/hotel' , {state : { destination , dates , option }})
     }
-
+    const {user} = useContext(AuthContext)
   return (
     <div className="header">
         <div className={type === 'list' ? 'headerContainer listMode' : 'headerContainer'}>
@@ -72,7 +73,7 @@ function Header({type}) {
             <p className="headerDesc">
                 Get reawarded for your travels - unlock instant sabings of 10% or more with a free Booking account
             </p>
-            <button className="headerBtn">Signup / Register</button>
+            {!user &&<button className="headerBtn">Signup / Register</button>}
             <div className="headerSearch">
                 <div className="headerSearchItem">
                 <FontAwesomeIcon icon={faBed} className='headerIcon' />
